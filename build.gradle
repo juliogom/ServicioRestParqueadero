@@ -1,3 +1,6 @@
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.2'
+}
 
 buildscript {
 	ext {
@@ -17,7 +20,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: "jacoco"
 apply plugin: 'io.spring.dependency-management'
-apply plugin: org.springframework.boot.gradle.plugin.SpringBootPlugin
+apply plugin: 'org.springframework.boot'
 
 
 group = 'com.ceiba.Parqueadero'
