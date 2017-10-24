@@ -14,14 +14,21 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
-
+apply plugin: "jacoco"
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'org.springframework.boot'
-apply plugin: "jacoco"
+
 
 group = 'com.ceiba.Parqueadero'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Parqueadero',
+                   'Implementation-Version': version
+    }
+}
 
 repositories {
 	mavenCentral()
@@ -33,7 +40,9 @@ repositories {
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-web')
+	compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
 	runtime('com.h2database:h2')
+	testCompile group: 'junit', name: 'junit', version: '4.+'
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile "org.mockito:mockito-core:1.+"
 }
@@ -56,11 +65,11 @@ test {
     reports.junitXml.destination=file("jacoco/test-results")
 }
 
-
-jar {
-    manifest {
-        attributes 'Implementation-Title': 'Parqueadero',
-                   'Implementation-Version': version
+uploadArchives {
+    repositories {
+       flatDir {
+           dirs 'repos'
+       }
     }
 }
 
