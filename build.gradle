@@ -8,9 +8,10 @@ buildscript {
 	}
 	repositories {
 		mavenCentral()
+		jcenter()
 		maven { url "https://repo.spring.io/snapshot" }
 		maven { url "https://repo.spring.io/milestone" }
-		jcenter()
+		
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -21,7 +22,10 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: "jacoco"
 apply plugin: 'io.spring.dependency-management'
-apply plugin: 'org.springframework.boot'
+
+plugins {
+    id 'org.springframework.boot' version '1.5.8.RELEASE'
+}
 
 
 group = 'com.ceiba.Parqueadero'
