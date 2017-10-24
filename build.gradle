@@ -30,6 +30,10 @@ jar {
     }
 }
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.4'
+}
+
 repositories {
 	mavenCentral()
 	maven { url "https://repo.spring.io/snapshot" }
