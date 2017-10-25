@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.ceiba.Parqueadero.servicio.PersonaServicioTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2017-10-24T16:02:47" hostname="JULIO-GOMEZ" time="0.72">
+<testsuite name="com.ceiba.Parqueadero.servicio.PersonaServicioTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2017-10-25T14:49:47" hostname="JULIO-GOMEZ" time="0.737">
   <properties/>
-  <testcase name="obtenerPersonastest" classname="com.ceiba.Parqueadero.servicio.PersonaServicioTest" time="0.72"/>
+  <testcase name="obtenerPersonastest" classname="com.ceiba.Parqueadero.servicio.PersonaServicioTest" time="0.737"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

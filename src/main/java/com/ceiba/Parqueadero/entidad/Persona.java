@@ -1,4 +1,4 @@
-package com.ceiba.Parqueadero.dominio;
+package com.ceiba.Parqueadero.entidad;
 
 public class Persona {
 	

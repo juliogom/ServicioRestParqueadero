@@ -9,14 +9,14 @@
     primary key(id)
 );*/
 
- Create Table Vehiculo( 
+ /*Create Table Vehiculo( 
     Id integer auto_increment, 
     Nombre varchar(100) not null , 
     Modelo integer not null, 
     placa varchar(100) not null, 
     color varchar(100) not null, 
-    primary key(id) 
-);
+    primary key(Id) 
+);*/
  
 
 

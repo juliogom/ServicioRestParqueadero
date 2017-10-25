@@ -1,6 +1,6 @@
 package co.ceiba.Parqueadero.testDataBuilder;
 
-import com.ceiba.Parqueadero.dominio.Persona;
+import com.ceiba.Parqueadero.entidad.Persona;
 
 public class PersonTestDataBuilder {
 	

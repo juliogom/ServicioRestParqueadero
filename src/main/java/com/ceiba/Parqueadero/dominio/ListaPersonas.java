@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.ceiba.Parqueadero.entidad.Persona;
+
 @Service
 public class ListaPersonas {
 

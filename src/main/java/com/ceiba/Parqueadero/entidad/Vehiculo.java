@@ -1,30 +1,35 @@
 package com.ceiba.Parqueadero.entidad;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Entity;
 
 @Entity
-@Table(name="Vehiculo")
+@Table(name="VEHICULO")
 public class Vehiculo {
 	
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.AUTO)
+
 	private int id;
+	
 	private String nombre;
-	private String modelo;
+	
+	private int modelo;
+	
 	private String placa;
+	
 	private String color;
 	
 	//Always
 	public Vehiculo() {
 		super();
-		
 	}
 	
-	public Vehiculo(int id,String nombre,String modelo,String placa,String color) {
+	public Vehiculo(int id,String nombre,int modelo,String placa,String color) {
 		this.id=id;
 		this.nombre=nombre;
 		this.modelo=modelo;
@@ -32,7 +37,7 @@ public class Vehiculo {
 		this.color=color;
 	}
 	
-	public Vehiculo(String nombre,String modelo,String placa,String color) {
+	public Vehiculo(String nombre,int modelo,String placa,String color) {
 		this.nombre=nombre;
 		this.modelo=modelo;
 		this.placa=placa;
@@ -55,11 +60,11 @@ public class Vehiculo {
 		this.nombre = nombre;
 	}
 
-	public String getModelo() {
+	public int getModelo() {
 		return modelo;
 	}
 
-	public void setModelo(String modelo) {
+	public void setModelo(int modelo) {
 		this.modelo = modelo;
 	}
 
