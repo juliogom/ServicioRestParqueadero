@@ -1,5 +1,7 @@
 package com.ceiba.Parqueadero.repositorio;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
@@ -23,11 +25,14 @@ public class RepositorioVehiculos {
 	EntityManager entity;
 		
 	public Vehiculo create(Vehiculo vehiculo) {
-		//entity.getTransaction().begin();
 		
 		entity.merge(vehiculo);
 		return vehiculo;
-		//entity.getTransaction().commit();
+	}
+	
+	public List<Vehiculo> findAll(){
+		
+		return null;
 	}
 	
 	public Vehiculo encontrarPorId(int id) {

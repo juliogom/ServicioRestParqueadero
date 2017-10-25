@@ -5,9 +5,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ceiba.Parqueadero.entidad.TipoVehiculo;
 import com.ceiba.Parqueadero.entidad.Vehiculo;
 import com.ceiba.Parqueadero.repositorio.RepositorioVehiculos;
 import com.ceiba.Parqueadero.servicio.VehiculoServicio;
@@ -34,15 +41,28 @@ public class VehiculoController {
 		
 		@GetMapping("/Grabar")
 		public String grabarPersonas() {
-				Vehiculo vehiculo = new Vehiculo("Toyota",2015,"HZQ-123","Negro");
 				
-				servicioVehiculo.crear(vehiculo);
+				TipoVehiculo tipoVehiculo=servicioVehiculo.obtenerTipoVehiculo(1);
 				
-				//logger.info("Inserting 1004 -> { }",
-						//repositorioVehiculo.create(new Vehiculo("Ferrary",2015,"HZQ-123","Negro")));
+				//Vehiculo vehiculo = new Vehiculo("Prado",2017,"HZQ-123","Negro",null);
+				
+				logger.info("Inserting 1004 -> { }",
+						tipoVehiculo);
+				
+				//servicioVehiculo.crear(vehiculo);
+				
 				
 				return "Guardado";
 		}
 		
+		
 	
+		
+		@RequestMapping(value = "/persistVehiculo", method = RequestMethod.POST)
+	    public ResponseEntity<Vehiculo>  persistPerson(@RequestBody Vehiculo vehiculo) {
+	        
+			
+			
+	        return new ResponseEntity<Vehiculo>(vehiculo,HttpStatus.OK);
+	    }
 }

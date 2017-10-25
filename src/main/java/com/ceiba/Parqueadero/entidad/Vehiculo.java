@@ -1,9 +1,12 @@
 package com.ceiba.Parqueadero.entidad;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Entity;
 
@@ -24,24 +27,29 @@ public class Vehiculo {
 	
 	private String color;
 	
+	@OneToOne(cascade = CascadeType.ALL)
+	private TipoVehiculo tipoVehiculo;
+	
 	//Always
 	public Vehiculo() {
 		super();
 	}
 	
-	public Vehiculo(int id,String nombre,int modelo,String placa,String color) {
+	public Vehiculo(int id,String nombre,int modelo,String placa,String color,TipoVehiculo tipoVehiculo) {
 		this.id=id;
 		this.nombre=nombre;
 		this.modelo=modelo;
 		this.placa=placa;
 		this.color=color;
+		this.tipoVehiculo=tipoVehiculo;
 	}
 	
-	public Vehiculo(String nombre,int modelo,String placa,String color) {
+	public Vehiculo(String nombre,int modelo,String placa,String color,TipoVehiculo tipoVehiculo) {
 		this.nombre=nombre;
 		this.modelo=modelo;
 		this.placa=placa;
 		this.color=color;
+		this.tipoVehiculo=tipoVehiculo;
 	}
 
 	public int getId() {
@@ -84,6 +92,13 @@ public class Vehiculo {
 		this.color = color;
 	}
 	
+	public TipoVehiculo getTipoVehiculo() {
+		return tipoVehiculo;
+	}
+
+	public void setTipoVehiculo(TipoVehiculo tipoVehiculo) {
+		this.tipoVehiculo = tipoVehiculo;
+	}
 	
 	
 }

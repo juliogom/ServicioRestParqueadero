@@ -7248,3 +7248,45 @@ Caused by: java.lang.IllegalStateException: The file is locked: nio:C:/Users/jul
 2017-10-25 11:41:29 jdbc[12]: exception
 org.h2.jdbc.JdbcSQLException: Table "VEHICULO" already exists; SQL statement:
 Create Table Vehiculo( Id integer auto_increment, Nombre varchar(100) not null , Modelo integer not null, placa varchar(100) not null, color varchar(100) not null, primary key(Id) ) [42101-196]
+2017-10-25 15:33:50 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "CREATE TABLE VEHICULO( 
+    ID INTEGER AUTO_INCREMENT, 
+    NOMBRE VARCHAR(100) NOT NULL , 
+    MODELO INTEGER NOT NULL, 
+    PLACA VARCHAR(100) NOT NULL, 
+    COLOR VARCHAR(100) NOT NULL,
+    ID_TIPO INTEGER NOT NULL,
+    FOREIGN KEY (ID_TIPO) REFERENCES TIPOVEHICULO(ID)
+    PRIMARY[*] KEY(ID) 
+) "; expected "INDEX, ON, NOT, DEFERRABLE, NOCHECK, CHECK, ,, )"; SQL statement:
+Create Table Vehiculo( 
+    Id integer auto_increment, 
+    Nombre varchar(100) not null , 
+    Modelo integer not null, 
+    placa varchar(100) not null, 
+    color varchar(100) not null,
+    Id_Tipo integer not null,
+    foreign key (Id_Tipo) references TipoVehiculo(Id)
+    primary key(Id) 
+) [42001-196]
+2017-10-25 15:34:03 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "CREATE TABLE VEHICULO( 
+    ID INTEGER AUTO_INCREMENT, 
+    NOMBRE VARCHAR(100) NOT NULL , 
+    MODELO INTEGER NOT NULL, 
+    PLACA VARCHAR(100) NOT NULL, 
+    COLOR VARCHAR(100) NOT NULL,
+    ID_TIPO INTEGER NOT NULL,
+    FOREIGN KEY (ID_TIPO) REFERENCES TIPOVEHICULO(ID)
+    PRIMARY[*] KEY(ID) 
+) "; expected "INDEX, ON, NOT, DEFERRABLE, NOCHECK, CHECK, ,, )"; SQL statement:
+Create Table Vehiculo( 
+    Id integer auto_increment, 
+    Nombre varchar(100) not null , 
+    Modelo integer not null, 
+    placa varchar(100) not null, 
+    color varchar(100) not null,
+    Id_Tipo integer not null,
+    foreign key (Id_Tipo) references TipoVehiculo(Id)
+    primary key(Id) 
+) [42001-196]

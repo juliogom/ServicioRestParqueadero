@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ceiba.Parqueadero.dominio.ListaPersonas;
 import com.ceiba.Parqueadero.entidad.Persona;
+import com.ceiba.Parqueadero.entidad.TipoVehiculo;
 import com.ceiba.Parqueadero.entidad.Vehiculo;
+import com.ceiba.Parqueadero.repositorio.RepositorioTipoVehiculos;
 import com.ceiba.Parqueadero.repositorio.RepositorioVehiculos;
 
 @ComponentScan("com.ceiba.Parqueadero.dominio,com.ceiba.Parqueadero.repositorio")
@@ -26,8 +28,27 @@ public class VehiculoServicio {
 	@Autowired
 	private RepositorioVehiculos repositorioVehiculo;
 	
+	@Autowired
+	private RepositorioTipoVehiculos repositorioTipo;
+	
+	
 	public void crear(Vehiculo vehiculo) {
 		repositorioVehiculo.create(vehiculo);
 	}
+	
+	public TipoVehiculo obtenerTipoVehiculo(int id) {
+		return repositorioTipo.encontrarPorId(id);
+	}
+	
+	
+	public void registroVehiculo(Vehiculo vehiculo) {
+		
+	}
+	
+	
+	public void obtenerTodos() {
+		
+	}
+	
 
 }
