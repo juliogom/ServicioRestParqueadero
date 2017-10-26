@@ -43,22 +43,17 @@ public class VehiculoController {
 		}
 		
 		@GetMapping("/Grabar")
-		public String grabarVehiculo() {
+		public int grabarVehiculo() {
 				
 				TipoVehiculo tipoVehiculo=servicioVehiculo.obtenerTipoVehiculo(1);
 				Vehiculo vehiculo = new Vehiculo("Prado",2017,"HZQ-123","Negro",tipoVehiculo);
-				
-				servicioVehiculo.registroVehiculo(vehiculo);
-				
-				//Vehiculo vehiculo = new Vehiculo("Prado",2017,"HZQ-123","Negro",null);
 				
 				logger.info("Inserting 1004 -> { }",
 						tipoVehiculo);
 				
 				//servicioVehiculo.crear(vehiculo);
 				
-				
-				return "Guardado";
+				return servicioVehiculo.registroVehiculo(vehiculo);
 		}
 		
 		@GetMapping("/Actividad")
@@ -72,7 +67,6 @@ public class VehiculoController {
 		@RequestMapping(value = "/persistVehiculo", method = RequestMethod.POST)
 	    public ResponseEntity<Vehiculo>  persistPerson(@RequestBody Vehiculo vehiculo) {
 	        
-			
 			
 	        return new ResponseEntity<Vehiculo>(vehiculo,HttpStatus.OK);
 	    }

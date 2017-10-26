@@ -1,6 +1,7 @@
 package com.ceiba.Parqueadero.servicio;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import javax.transaction.Transactional;
@@ -27,6 +28,10 @@ import com.ceiba.Parqueadero.repositorio.RepositorioVehiculos;
 @Service
 public class VehiculoServicio {
 	
+	private final int NUMERO_CARROS=20;
+	private final int NUMERO_MOTOS=10;
+	
+	
 	@Autowired
 	private RepositorioVehiculos repositorioVehiculo;
 	
@@ -45,18 +50,42 @@ public class VehiculoServicio {
 	}
 	
 	
-	public void registroVehiculo(Vehiculo vehiculo) {
+	public int registroVehiculo(Vehiculo vehiculo) {
 		
-		List<Actividad> actividades=ObtenerParqueados();
+		int cantidadVehiculosActivo=obtenerVehiculosActivos(ObtenerParqueados(),vehiculo).toArray().length;
 		
-		Stream<Actividad> vehiculosActivos=actividades.stream().filter(p -> p.getEstado() == 1);
+		if((vehiculo.getTipoVehiculo().getId() == 1) && (cantidadVehiculosActivo <= NUMERO_CARROS)) {
+			
+			
+			
+		}else if(vehiculo.getTipoVehiculo().getId() == 2 && cantidadVehiculosActivo <= NUMERO_MOTOS) {
+			
+		}else{
+			
+		}
 		
-		
+		return cantidadVehiculosActivo;
 		//ObtenerParqueados
 	}
 	
-	public void obtenerTodos() {
+	public void verificarLetra() {
 		
+	}
+	
+	
+	public Stream<Vehiculo> obtenerVehiculosActivos(List<Actividad> actividades,Vehiculo vehiculo) {
+		
+		Stream<Vehiculo> vehiculosActivos=actividades.stream().filter(p -> p.getEstado() == 1 && p.getVehiculo().getTipoVehiculo().getId() == vehiculo.getTipoVehiculo().getId())
+				.map(new Function<Actividad,Vehiculo>() {
+	                  @Override
+	                  public Vehiculo apply(Actividad actividad) {
+	                	  	                	  
+	                     return actividad.getVehiculo();
+	                  }
+	              }
+				);
+		
+		return vehiculosActivos;
 	}
 	
 	public List<Actividad> ObtenerParqueados() {

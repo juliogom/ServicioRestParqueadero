@@ -46,8 +46,9 @@ Create Table Slot(
 
 /*insert into Cliente(Nombre,Apellido,Telefono) values('Julio','Gomez','310534625');*/
 
-/*insert into Vehiculo(Nombre,Modelo,Placa,Color) values ('Mazda',2015,'HAZ-1456','AZUL');
- * 
+/*insert into Vehiculo(Nombre,Modelo,Placa,Color,TIPO_VEHICULO_ID) values ('Suzuki',2016,'HAZ-1456','Roja',2);
+ *UPDATE ACTIVIDAD SET ESTADO= 0 WHERE ID = 2; 
+ *insert into ACTIVIDAD(ID,ESTADO,Fecha_Inicio,SLOT_ID,VEHICULO_ID) values (3,1,'2017-10-26 09:30:00',3,3)
  * insert into ACTIVIDAD(ID,ESTADO,Fecha_Inicio,SLOT_ID,VEHICULO_ID) values (1,1,'2017-10-26 09:30:00',1,1)*/
 
 
