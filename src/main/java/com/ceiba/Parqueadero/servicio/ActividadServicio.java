@@ -21,4 +21,9 @@ public class ActividadServicio {
 		return repositorioActividad.buscarTodos();
 	}
 	
+	public Actividad crearActividad(Actividad actividad) {
+		return repositorioActividad.create(actividad);
+	}
+	
+	
 }

@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.stereotype.Repository;
 
 import com.ceiba.Parqueadero.entidad.Actividad;
+import com.ceiba.Parqueadero.entidad.Vehiculo;
 
 @Repository
 @EntityScan(basePackages = "com.ceiba.Parqueadero.entidad")
@@ -22,6 +23,12 @@ public class RepositorioActividad {
 			TypedQuery<Actividad> actividades= entity.createNamedQuery("find_all_Actividades",Actividad.class);
 			
 			return actividades.getResultList();
+		}
+		
+		public Actividad create(Actividad actividad) {
+			
+			entity.merge(actividad);
+			return actividad;
 		}
 		
 		

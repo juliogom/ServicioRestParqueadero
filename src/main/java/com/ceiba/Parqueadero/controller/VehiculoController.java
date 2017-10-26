@@ -1,5 +1,6 @@
 package com.ceiba.Parqueadero.controller;
 
+import java.util.Calendar;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ceiba.Parqueadero.entidad.Actividad;
@@ -43,31 +45,41 @@ public class VehiculoController {
 		}
 		
 		@GetMapping("/Grabar")
-		public int grabarVehiculo() {
-				
-				TipoVehiculo tipoVehiculo=servicioVehiculo.obtenerTipoVehiculo(1);
-				Vehiculo vehiculo = new Vehiculo("Prado",2017,"HZQ-123","Negro",tipoVehiculo);
-				
-				logger.info("Inserting 1004 -> { }",
-						tipoVehiculo);
-				
-				//servicioVehiculo.crear(vehiculo);
-				
-				return servicioVehiculo.registroVehiculo(vehiculo);
+		public String grabarVehiculo() {
+				return "";
 		}
 		
 		@GetMapping("/Actividad")
 		public List<Actividad> obtenerActividades() {
-				
-				return servicioVehiculo.ObtenerParqueados();
+			
+				return servicioVehiculo.obtenerParqueados();
 		}
 		
-		
+		@GetMapping("/pruebas")
+		public int utilidades() {
+			Calendar calendar = Calendar.getInstance();
+			int diaActual = calendar.get(Calendar.DAY_OF_WEEK);
+				return diaActual;
+		}
 		
 		@RequestMapping(value = "/persistVehiculo", method = RequestMethod.POST)
 	    public ResponseEntity<Vehiculo>  persistPerson(@RequestBody Vehiculo vehiculo) {
 	        
+			TipoVehiculo tipoVehiculo=servicioVehiculo.obtenerTipoVehiculo(1);
+			
+			System.out.println(servicioVehiculo.registro(vehiculo));
 			
 	        return new ResponseEntity<Vehiculo>(vehiculo,HttpStatus.OK);
 	    }
+		
+		@RequestMapping(value = "/pruebaPost", method = RequestMethod.POST)
+	    public ResponseEntity<Vehiculo>  persistVehiculo(@RequestBody Vehiculo vehiculo) {        
+			TipoVehiculo tipoVehiculo=servicioVehiculo.obtenerTipoVehiculo(1);
+			
+			vehiculo.setTipoVehiculo(tipoVehiculo);
+			
+	        return new  ResponseEntity<Vehiculo>(vehiculo,HttpStatus.OK);
+	    }
+		
+		
 }
