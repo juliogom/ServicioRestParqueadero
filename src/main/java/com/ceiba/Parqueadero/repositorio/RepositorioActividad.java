@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.stereotype.Repository;
 
 import com.ceiba.Parqueadero.entidad.Actividad;
+import com.ceiba.Parqueadero.entidad.TipoVehiculo;
 import com.ceiba.Parqueadero.entidad.Vehiculo;
 
 @Repository
@@ -31,6 +32,8 @@ public class RepositorioActividad {
 			return actividad;
 		}
 		
-		
+		public Actividad encontrarPorId(int id) {
+			return entity.find(Actividad.class, id);
+		}
 		
 }

@@ -1,6 +1,8 @@
 package com.ceiba.Parqueadero.servicio;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ceiba.Parqueadero.dominio.ListaPersonas;
 import com.ceiba.Parqueadero.entidad.Actividad;
 import com.ceiba.Parqueadero.entidad.Persona;
+import com.ceiba.Parqueadero.entidad.Servicio;
 import com.ceiba.Parqueadero.entidad.Slot;
 import com.ceiba.Parqueadero.entidad.TipoVehiculo;
 import com.ceiba.Parqueadero.entidad.Vehiculo;
@@ -38,30 +41,36 @@ public class VehiculoServicio {
 	private final int NUMERO_CARROS = 20;
 	private final int NUMERO_MOTOS = 10;
 	private final char RESTRICCION_LETRA = 'A';
+	
+	private final int VALOR_ADICIONAL_CILINDRAJE = 2000;
+	private final int VALOR_DIA_CARRO=8000;
+	private final int VALOR_DIA_MOTO=6000;
 
 	@Autowired
 	private RepositorioVehiculos repositorioVehiculo;
 
 	@Autowired
 	private RepositorioTipoVehiculos repositorioTipo;
-	
+
 	@Autowired
 	private RepositorioSlot repositorioSlot;
-	
+
 	@Autowired
 	ActividadServicio actividadServicio;
-
+	
+	@Autowired
+	FacturaServicio serviciofactura;
+	
 	public void crear(Vehiculo vehiculo) {
 		repositorioVehiculo.create(vehiculo);
 	}
-	
+
 	public Vehiculo obtenerPorId(int id) {
-		
+
 		return repositorioVehiculo.encontrarPorId(id);
-		
+
 	}
-	
-	
+
 	public TipoVehiculo obtenerTipoVehiculo(int id) {
 		return repositorioTipo.encontrarPorId(id);
 	}
@@ -71,74 +80,146 @@ public class VehiculoServicio {
 		int cantidadVehiculosActivo = obtenerVehiculosActivos(obtenerParqueados(), vehiculo).toArray().length;
 
 		boolean espacio = false;
-		boolean guardar=false;
-		
-		String mensaje="";
-		
-		//DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		boolean guardar = false;
+
+		String mensaje = "";
+
 		Date fechaActual = new Date();
-		
-		
+
 		int tipoVehiculo = vehiculo.getTipoVehiculo().getId();
+
+		String nombreServicio = "";
+		String descServicio = "";
+		int valorServicio = 0;
 
 		if ((tipoVehiculo == 1) && (cantidadVehiculosActivo <= NUMERO_CARROS)) {
 			espacio = true;
+			nombreServicio = "Servicio Carro";
+			descServicio = "Servicio de parqueo Carro";
+			valorServicio = 1000;
 
 		} else if ((tipoVehiculo == 2) && (cantidadVehiculosActivo <= NUMERO_MOTOS)) {
 			espacio = true;
+			nombreServicio = "Servicio Moto";
+			descServicio = "Servicio de parqueo Moto";
+			valorServicio = 500;
 		} else {
 			espacio = false;
 		}
-		
+
+		Servicio servicio = null;
 		if (espacio) {
-			
-			boolean letraInicial =verificarLetraInicial(vehiculo.getPlaca());
-			
-			if(letraInicial ) {
-				
+			servicio = new Servicio(nombreServicio, descServicio, valorServicio);
+
+			boolean letraInicial = verificarLetraInicial(vehiculo.getPlaca());
+
+			if (letraInicial) {
+
 				Calendar calendar = Calendar.getInstance();
 				int diaActual = calendar.get(Calendar.DAY_OF_WEEK);
-				
-				if(diaActual == 6 || diaActual == 0) {
-					guardar=true;
-				}else {
-					guardar=false;
-					mensaje="no puede ingresar al parqueadero porque no es un día hábil";
+
+				if (diaActual == 1 || diaActual == 2) {
+					guardar = true;
+				} else {
+					guardar = false;
+					mensaje = "no puede ingresar al parqueadero porque no es un día hábil";
 				}
-				
-			}else {
-				guardar=true;
+
+			} else {
+				guardar = true;
 			}
+
+		} else {
+			guardar = false;
+			mensaje = "No hay espacios disponibles en el parqueadero para su tipo de vehiculo";
+		}
+
+		if (guardar) {
+
+			Optional<Slot> opcional = obtenerPrimerSlotDisponible();
+
+			if (opcional.isPresent()) {
+				Slot slot = opcional.get();
+				slot.setOcupado(true);
+
+				Actividad actividad = new Actividad(1, fechaActual, servicio, slot, vehiculo);
+				actividadServicio.crearActividad(actividad);
+				mensaje = "bienvenido";
+			}
+
+		}
+
+		return mensaje;
+	}
+
+	public String realizarSalida(int id) {
+				
+		String mensaje="";
+		
+		Optional<Actividad>actividadOpcional=obtenerParqueados().stream().filter(s -> s.getVehiculo().getId() == id && s.getEstado()== 1).findFirst();
+		
+		if (actividadOpcional.isPresent()) {
+			
+			Actividad actividad = actividadOpcional.get();
+			int valorDia=0;
+			
+			if(actividad.getVehiculo().getTipoVehiculo().getId()==1) {
+				valorDia=VALOR_DIA_CARRO;
+			}else {
+				valorDia=VALOR_DIA_MOTO;
+			}
+			
+			int cobroTotal=0;
+			
+			cobroTotal=obtenerCobro(actividad,valorDia);
+			
+			serviciofactura.crear(factura, detalleActividades);
 			
 			
 		}else {
-			guardar=false;
+			mensaje="El vehiculo no fué encontrado";
 		}
-		
-		
-		if(guardar) {
-			
-			Optional<Slot> opcional=obtenerPrimerSlotDisponible();
-			
-			if(opcional.isPresent()) {
-				Slot slot=opcional.get();
-				slot.setOcupado(true);
-				
-				Actividad actividad=new Actividad(1,fechaActual,slot,vehiculo);
-				actividadServicio.crearActividad(actividad);
-				mensaje="bienvenido";
-			}
-			/*if(obtenerPorId(vehiculo.getId()) != null) {
-			}*/
-			
-		}
-		
 		
 		return mensaje;
-		// ObtenerParqueados
+	}
+	
+	public int obtenerCobro(Actividad actividad,int valorDia) {
+		
+		Calendar calendar = Calendar.getInstance();
+				 
+        Date fechaInicial=actividad.getFechaInicio();
+        Date fechaFinal=calendar.getTime();
+		
+        int minutos=(int) ((fechaFinal.getTime()-fechaInicial.getTime())/1000);
+        
+        int diferenciaHoras=(int)Math.floor(minutos/3600);
+        
+        double dias=(double)diferenciaHoras/24;
+        
+        BigDecimal number = new BigDecimal(dias);
+        
+        long parteEntera=number.longValue();
+                
+        double fraccionDoble=number.remainder(BigDecimal.ONE).doubleValue()*24;
+        
+        int horas=0;
+        
+        if(fraccionDoble>=9){
+        	horas=valorDia;
+        	
+        }else {
+        	horas=(int) fraccionDoble *actividad.getServicio().getPrecio();
+        }
+        
+        if(actividad.getVehiculo().getTipoVehiculo().getId()==2 && actividad.getVehiculo().getCilindraje() > 500) {
+        	return (horas + (int)(parteEntera*valorDia)) + 2000;
+        }else {
+        	return (horas + (int)(parteEntera*valorDia));
+        }
 	}
 	
 	
+
 	public boolean verificarLetraInicial(String placa) {
 
 		boolean contiene = false;
@@ -164,15 +245,13 @@ public class VehiculoServicio {
 
 		return vehiculosActivos;
 	}
-	
-	public Optional<Slot> obtenerPrimerSlotDisponible(){
-		
-		return repositorioSlot.buscarTodos().stream()
-				.filter(s -> ! s.isOcupado()).findFirst();
+
+	public Optional<Slot> obtenerPrimerSlotDisponible() {
+
+		return repositorioSlot.buscarTodos().stream().filter(s -> !s.isOcupado()).findFirst();
 
 	}
-	
-	
+
 	public List<Actividad> obtenerParqueados() {
 		return actividadServicio.obtenerActividades();
 	}

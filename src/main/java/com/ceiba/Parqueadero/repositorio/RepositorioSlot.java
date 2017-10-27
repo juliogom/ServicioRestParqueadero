@@ -15,9 +15,10 @@ import com.ceiba.Parqueadero.entidad.Slot;
 @EntityScan(basePackages = "com.ceiba.Parqueadero.entidad")
 public class RepositorioSlot {
 	
-	
 	@PersistenceContext
 	private EntityManager entity;
+	
+	
 	
 	public List<Slot> buscarTodos() {
 		TypedQuery<Slot> actividades= entity.createNamedQuery("find_all_slots",Slot.class);

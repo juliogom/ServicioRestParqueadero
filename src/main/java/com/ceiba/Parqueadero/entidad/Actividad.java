@@ -27,28 +27,33 @@ public class Actividad {
 	@NotNull
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date fechaInicio;
-
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	private Servicio servicio;
+	
 	@OneToOne(cascade = CascadeType.ALL)
 	private Slot slot;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	private Vehiculo vehiculo;
-
+	
 	public Actividad() {
 		super();
 	}
-
-	public Actividad(int id, int estado, Date fechaInicio, Slot slot, Vehiculo vehiculo) {
+	
+	public Actividad(int id, int estado, Date fechaInicio,Servicio servicio, Slot slot, Vehiculo vehiculo) {
 		this.id = id;
 		this.fechaInicio = fechaInicio;
 		this.estado = estado;
+		this.servicio=servicio;
 		this.slot = slot;
 		this.vehiculo = vehiculo;
 	}
 
-	public Actividad(int estado, Date fechaInicio, Slot slot, Vehiculo vehiculo) {
+	public Actividad(int estado, Date fechaInicio,Servicio servicio, Slot slot, Vehiculo vehiculo) {
 		this.estado = estado;
 		this.fechaInicio = fechaInicio;
+		this.servicio=servicio;
 		this.slot = slot;
 		this.vehiculo = vehiculo;
 	}
@@ -76,7 +81,15 @@ public class Actividad {
 	public void setFechaInicio(Date fechaInicio) {
 		this.fechaInicio = fechaInicio;
 	}
+	
+	public Servicio getServicio() {
+		return servicio;
+	}
 
+	public void setServicio(Servicio servicio) {
+		this.servicio = servicio;
+	}
+	
 	public Slot getSlot() {
 		return slot;
 	}

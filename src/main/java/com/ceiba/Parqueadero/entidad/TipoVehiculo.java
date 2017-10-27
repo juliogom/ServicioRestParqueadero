@@ -17,6 +17,7 @@ public class TipoVehiculo {
 	private String nombre;
 	private String descripcion;
 	
+	
 	public TipoVehiculo() {
 		super();
 	}
@@ -56,7 +57,6 @@ public class TipoVehiculo {
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
-	
 	
 }
 
