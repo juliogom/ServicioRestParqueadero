@@ -1,9 +1,11 @@
 package com.ceiba.Parqueadero.servicio;
 
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -24,6 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ceiba.Parqueadero.dominio.ListaPersonas;
 import com.ceiba.Parqueadero.entidad.Actividad;
+import com.ceiba.Parqueadero.entidad.DetalleFactura;
+import com.ceiba.Parqueadero.entidad.Factura;
 import com.ceiba.Parqueadero.entidad.Persona;
 import com.ceiba.Parqueadero.entidad.Servicio;
 import com.ceiba.Parqueadero.entidad.Slot;
@@ -152,11 +156,11 @@ public class VehiculoServicio {
 		return mensaje;
 	}
 
-	public String realizarSalida(int id) {
+	public DetalleFactura realizarSalida(int id) {
 				
-		String mensaje="";
-		
 		Optional<Actividad>actividadOpcional=obtenerParqueados().stream().filter(s -> s.getVehiculo().getId() == id && s.getEstado()== 1).findFirst();
+		
+		DetalleFactura detalleFactura=null;
 		
 		if (actividadOpcional.isPresent()) {
 			
@@ -170,31 +174,26 @@ public class VehiculoServicio {
 			}
 			
 			int cobroTotal=0;
+			double numeroDias=0;
 			
 			cobroTotal=obtenerCobro(actividad,valorDia);
+			numeroDias=obtenerDias(actividad);
 			
-			serviciofactura.crear(factura, detalleActividades);
+			
+			List<Actividad> actividades=new ArrayList<Actividad>();
+			actividades.add(actividad);
+			
+			detalleFactura=serviciofactura.crear(actividades,cobroTotal,numeroDias);
 			
 			
-		}else {
-			mensaje="El vehiculo no fué encontrado";
 		}
 		
-		return mensaje;
+		return detalleFactura;
 	}
 	
 	public int obtenerCobro(Actividad actividad,int valorDia) {
-		
-		Calendar calendar = Calendar.getInstance();
-				 
-        Date fechaInicial=actividad.getFechaInicio();
-        Date fechaFinal=calendar.getTime();
-		
-        int minutos=(int) ((fechaFinal.getTime()-fechaInicial.getTime())/1000);
-        
-        int diferenciaHoras=(int)Math.floor(minutos/3600);
-        
-        double dias=(double)diferenciaHoras/24;
+		        
+        double dias=obtenerDias(actividad);
         
         BigDecimal number = new BigDecimal(dias);
         
@@ -216,6 +215,21 @@ public class VehiculoServicio {
         }else {
         	return (horas + (int)(parteEntera*valorDia));
         }
+	}
+	
+	public double obtenerDias(Actividad actividad) {
+		Calendar calendar = Calendar.getInstance();
+		 
+        Date fechaInicial=actividad.getFechaInicio();
+        Date fechaFinal=calendar.getTime();
+		
+        int minutos=(int) ((fechaFinal.getTime()-fechaInicial.getTime())/1000);
+        
+        int diferenciaHoras=(int)Math.floor(minutos/3600);
+        
+        double dias=(double)diferenciaHoras/24;
+        
+        return dias;
 	}
 	
 	
@@ -247,13 +261,19 @@ public class VehiculoServicio {
 	}
 
 	public Optional<Slot> obtenerPrimerSlotDisponible() {
-
 		return repositorioSlot.buscarTodos().stream().filter(s -> !s.isOcupado()).findFirst();
-
 	}
 
 	public List<Actividad> obtenerParqueados() {
 		return actividadServicio.obtenerActividades();
 	}
-
+	
+	public Stream<Actividad> obtenerVehiculosParqueados(){
+		
+		 return obtenerParqueados().stream().filter(v -> v.getEstado() == 1);
+		
+	}
+	
+	
+	
 }

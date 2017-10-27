@@ -29,7 +29,10 @@ public class Vehiculo {
 	
 	private int cilindraje;
 	
+	@OneToOne(cascade = CascadeType.ALL)
+	private Cliente cliente;
 	
+
 	@OneToOne(cascade = CascadeType.ALL)
 	private TipoVehiculo tipoVehiculo;
 	
@@ -38,22 +41,24 @@ public class Vehiculo {
 		super();
 	}
 	
-	public Vehiculo(int id,String nombre,int modelo,String placa,String color,int cilindraje,TipoVehiculo tipoVehiculo) {
+	public Vehiculo(int id,String nombre,int modelo,String placa,String color,int cilindraje,Cliente cliente,TipoVehiculo tipoVehiculo) {
 		this.id=id;
 		this.nombre=nombre;
 		this.modelo=modelo;
 		this.placa=placa;
 		this.color=color;
 		this.cilindraje=cilindraje;
+		this.cliente=cliente;
 		this.tipoVehiculo=tipoVehiculo;
 	}
 	
-	public Vehiculo(String nombre,int modelo,String placa,String color,int cilindraje,TipoVehiculo tipoVehiculo) {
+	public Vehiculo(String nombre,int modelo,String placa,String color,int cilindraje,Cliente cliente,TipoVehiculo tipoVehiculo) {
 		this.nombre=nombre;
 		this.modelo=modelo;
 		this.placa=placa;
 		this.color=color;
 		this.cilindraje=cilindraje;
+		this.cliente=cliente;
 		this.tipoVehiculo=tipoVehiculo;
 	}
 
@@ -103,6 +108,14 @@ public class Vehiculo {
 
 	public void setCilindraje(int cilindraje) {
 		this.cilindraje = cilindraje;
+	}
+	
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
 	}
 	
 	public TipoVehiculo getTipoVehiculo() {

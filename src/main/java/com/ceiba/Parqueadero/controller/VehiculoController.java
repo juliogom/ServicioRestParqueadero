@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,11 +48,6 @@ public class VehiculoController {
 	@Autowired
 	VehiculoServicio servicioVehiculo;
 
-	@Autowired
-	FacturaServicio serviciofactura;
-
-	@Autowired
-	RepositorioActividad actividadRepositorio;
 
 	@GetMapping("/ingresar")
 	public String obtenerPersonas() throws ParseException {
@@ -102,32 +98,23 @@ public class VehiculoController {
 	@RequestMapping(value = "/Salida", method = RequestMethod.POST)
 	public String registrarSalida(@RequestBody Vehiculo vehiculo) {
 		int id = vehiculo.getId();
-		String salida = servicioVehiculo.realizarSalida(id);
-		return "" + salida;
+		//String salida = servicioVehiculo.realizarSalida(id);
+		return "" + id;
 	}
 
-	// Método para guardar una factura(Pruebas
-	@GetMapping("/factura")
-	public DetalleFactura facturaGuardar() {
-		Calendar calendar = Calendar.getInstance();
-
-		List<Actividad> actividades = new ArrayList<Actividad>();
-
-		actividades.add(actividadRepositorio.encontrarPorId(1));
-		actividades.add(actividadRepositorio.encontrarPorId(2));
-		actividades.add(actividadRepositorio.encontrarPorId(3));
-
-		Date fechaInicial = calendar.getTime();
-		// crear
-		Cliente usuario = new Cliente("10384", "Juan", 23, "Perez", "2315238");
-
-		Factura fact = new Factura(fechaInicial, 50000, usuario);
-
-		return serviciofactura.crear(fact, actividades);
-
-		// serviciofactura.crear(fact);
-
-		// return 1;
+	// Método que contiene la implementación real de facturar y salir
+	@RequestMapping(value = "/factura", method = RequestMethod.POST)
+	public ResponseEntity<DetalleFactura> facturaGuardar(@RequestBody Vehiculo vehiculo) {
+		return new ResponseEntity<DetalleFactura> (servicioVehiculo.realizarSalida(vehiculo.getId()),HttpStatus.OK);
 	}
+	
+	//Método que contiene la implementación real de Obtener los vehiculos
+	@GetMapping("/parqueadero/vehiculos")
+	public Stream<Actividad> obtenerVehiculos() {
+		
+		return servicioVehiculo.obtenerVehiculosParqueados();
+	}
+	
+	
 
 }

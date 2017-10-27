@@ -25,5 +25,4 @@ public class ActividadServicio {
 		return repositorioActividad.create(actividad);
 	}
 	
-	
 }
