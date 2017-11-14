@@ -6,14 +6,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Entity;
 
 @Entity
 @Table(name="VEHICULO")
+@NamedQuery(name="find_all_Vehiculos",query="Select v from Vehiculo v")
 public class Vehiculo {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 

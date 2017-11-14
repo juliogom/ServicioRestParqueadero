@@ -9,24 +9,24 @@ import javax.persistence.TypedQuery;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.stereotype.Repository;
 
-import com.ceiba.Parqueadero.entidad.Slot;
+import com.ceiba.Parqueadero.entidad.Servicio;
+
 
 @Repository
 @EntityScan(basePackages = "com.ceiba.Parqueadero.entidad")
-public class RepositorioSlot {
+public class RepositorioServicios {
 	
 	@PersistenceContext
 	private EntityManager entity;
 	
-	public List<Slot> buscarTodos() {
-		TypedQuery<Slot> actividades= entity.createNamedQuery("find_all_slots",Slot.class);
+	public List<Servicio> findAll() {
+		TypedQuery<Servicio> actividades= entity.createNamedQuery("find_all_servicios",Servicio.class);
 		
 		return actividades.getResultList();
 	}
 	
-	public Slot findById(int id) {
-		
-		return entity.find(Slot.class, id);	
+	public Servicio findById(int id) {
+		return entity.find(Servicio.class, id);
 	}
 	
 }

@@ -4,11 +4,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import javassist.compiler.ast.Member;
+
 @Entity
 @Table(name="TIPOVEHICULO")
+@NamedQuery(name = "find_all_Tipo_Vehiculo", query = "select T from TipoVehiculo T")
 public class TipoVehiculo {
 	
 	@Id
@@ -20,6 +24,7 @@ public class TipoVehiculo {
 	
 	public TipoVehiculo() {
 		super();
+		
 	}
 	
 	public TipoVehiculo(int id,String nombre,String descripcion) {

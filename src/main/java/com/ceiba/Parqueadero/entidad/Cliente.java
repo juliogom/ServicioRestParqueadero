@@ -4,9 +4,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+
 @Entity
+@Table(name="CLIENTE")
+@NamedQuery(name="find_all_Clientes",query="Select c from Cliente c")
 public class Cliente {
 
 	@Id

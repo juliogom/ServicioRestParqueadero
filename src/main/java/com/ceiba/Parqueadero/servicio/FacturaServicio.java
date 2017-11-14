@@ -26,17 +26,19 @@ public class FacturaServicio {
 	
 	public DetalleFactura crear(List<Actividad> detalleActividades,int total,double numeroDias) {
 		
-		Cliente cliente=new Cliente();
+		Cliente cliente=null;
 		
 		DetalleFactura detalle=new DetalleFactura();
 		detalle.setActividades(detalleActividades);
 		
 		for (Actividad actividad : detalleActividades) {
+			
 			detalle.setCantidad((int)numeroDias);
 			detalle.setTotal(actividad.getServicio().getPrecio()*(int)numeroDias);
 			cliente=actividad.getVehiculo().getCliente();
 			actividad.getSlot().setOcupado(false);
 			actividad.setEstado(0);
+			
 		}
 		
 		Calendar calendar = Calendar.getInstance();

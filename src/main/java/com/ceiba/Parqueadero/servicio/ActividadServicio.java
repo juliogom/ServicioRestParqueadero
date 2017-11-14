@@ -25,4 +25,9 @@ public class ActividadServicio {
 		return repositorioActividad.create(actividad);
 	}
 	
+	public Actividad buscarActividadPorId( int id){
+		return repositorioActividad.encontrarPorId(id);
+	}
+	
+	
 }

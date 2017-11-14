@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
+import com.ceiba.Parqueadero.entidad.Actividad;
 import com.ceiba.Parqueadero.entidad.Vehiculo;
 import org.springframework.data.repository.CrudRepository;
 
@@ -32,7 +34,8 @@ public class RepositorioVehiculos {
 	
 	public List<Vehiculo> findAll(){
 		
-		return null;
+		return entity.createNamedQuery("find_all_Vehiculos",Vehiculo.class).getResultList();
+		
 	}
 	
 	public Vehiculo encontrarPorId(int id) {

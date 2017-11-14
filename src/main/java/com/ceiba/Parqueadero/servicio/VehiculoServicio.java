@@ -33,6 +33,7 @@ import com.ceiba.Parqueadero.entidad.Servicio;
 import com.ceiba.Parqueadero.entidad.Slot;
 import com.ceiba.Parqueadero.entidad.TipoVehiculo;
 import com.ceiba.Parqueadero.entidad.Vehiculo;
+import com.ceiba.Parqueadero.repositorio.RepositorioServicios;
 import com.ceiba.Parqueadero.repositorio.RepositorioSlot;
 import com.ceiba.Parqueadero.repositorio.RepositorioTipoVehiculos;
 import com.ceiba.Parqueadero.repositorio.RepositorioVehiculos;
@@ -65,6 +66,9 @@ public class VehiculoServicio {
 	@Autowired
 	FacturaServicio serviciofactura;
 	
+	@Autowired
+	RepositorioServicios repositorioServicio;
+	
 	public void crear(Vehiculo vehiculo) {
 		repositorioVehiculo.create(vehiculo);
 	}
@@ -78,8 +82,12 @@ public class VehiculoServicio {
 	public TipoVehiculo obtenerTipoVehiculo(int id) {
 		return repositorioTipo.encontrarPorId(id);
 	}
+	
+	public List<TipoVehiculo> obtenerTiposVehiculo(){
+		return repositorioTipo.buscarTodos();
+	}
 
-	public String registro(Vehiculo vehiculo) {
+	public String registro(Vehiculo vehiculo,Slot slot){
 
 		int cantidadVehiculosActivo = obtenerVehiculosActivos(obtenerParqueados(), vehiculo).toArray().length;
 
@@ -92,31 +100,29 @@ public class VehiculoServicio {
 
 		int tipoVehiculo = vehiculo.getTipoVehiculo().getId();
 
-		String nombreServicio = "";
-		String descServicio = "";
-		int valorServicio = 0;
-
+		Servicio servicio = null;
+		
 		if ((tipoVehiculo == 1) && (cantidadVehiculosActivo <= NUMERO_CARROS)) {
 			espacio = true;
-			nombreServicio = "Servicio Carro";
-			descServicio = "Servicio de parqueo Carro";
-			valorServicio = 1000;
-
+			
+			servicio = this.repositorioServicio.findById(1);
+			
 		} else if ((tipoVehiculo == 2) && (cantidadVehiculosActivo <= NUMERO_MOTOS)) {
 			espacio = true;
-			nombreServicio = "Servicio Moto";
-			descServicio = "Servicio de parqueo Moto";
-			valorServicio = 500;
+			
+			servicio = this.repositorioServicio.findById(2);
 		} else {
 			espacio = false;
+			
+			servicio=null;
+			
+			System.out.println("No es ninguno");
 		}
 
-		Servicio servicio = null;
 		if (espacio) {
-			servicio = new Servicio(nombreServicio, descServicio, valorServicio);
-
+			
 			boolean letraInicial = verificarLetraInicial(vehiculo.getPlaca());
-
+			guardar=true;
 			if (letraInicial) {
 
 				Calendar calendar = Calendar.getInstance();
@@ -138,62 +144,63 @@ public class VehiculoServicio {
 			mensaje = "No hay espacios disponibles en el parqueadero para su tipo de vehiculo";
 		}
 
-		if (guardar) {
-
-			Optional<Slot> opcional = obtenerPrimerSlotDisponible();
-
-			if (opcional.isPresent()) {
-				Slot slot = opcional.get();
-				slot.setOcupado(true);
-
-				Actividad actividad = new Actividad(1, fechaActual, servicio, slot, vehiculo);
-				actividadServicio.crearActividad(actividad);
-				mensaje = "bienvenido";
-			}
-
+		if (guardar && (!vehiculoParqueado(vehiculo.getId())) ) {
+			
+				if(!slot.isOcupado()) {
+					slot.setOcupado(true);
+					
+					Actividad actividad = new Actividad(1, fechaActual, servicio, slot, vehiculo);
+					actividadServicio.crearActividad(actividad);
+					mensaje = "bienvenido";
+				}else {
+					mensaje = "Slot Ocupado";
+				}
+			
 		}
 
 		return mensaje;
 	}
-
-	public DetalleFactura realizarSalida(int id) {
-				
-		Optional<Actividad>actividadOpcional=obtenerParqueados().stream().filter(s -> s.getVehiculo().getId() == id && s.getEstado()== 1).findFirst();
+	
+	public boolean vehiculoParqueado(int id) {
 		
-		DetalleFactura detalleFactura=null;
+		 Optional vehiculoActivo=this.actividadServicio.obtenerActividades().stream()
+				.filter(act -> act.getVehiculo().getId() == id && act.getEstado() == 1).findFirst();
 		
-		if (actividadOpcional.isPresent()) {
-			
-			Actividad actividad = actividadOpcional.get();
-			int valorDia=0;
-			
-			if(actividad.getVehiculo().getTipoVehiculo().getId()==1) {
-				valorDia=VALOR_DIA_CARRO;
-			}else {
-				valorDia=VALOR_DIA_MOTO;
-			}
+		if(vehiculoActivo.isPresent()) {
+			return true;
+		}else
+			return false;
+		 
+	}
+	
+	
+	public DetalleFactura realizarSalida(Actividad act) {
+		
+		Actividad actividad=this.actividadServicio.buscarActividadPorId(act.getId());
+		
+			DetalleFactura detalleFactura=null;
 			
 			int cobroTotal=0;
 			double numeroDias=0;
 			
-			cobroTotal=obtenerCobro(actividad,valorDia);
-			numeroDias=obtenerDias(actividad);
-			
-			
-			List<Actividad> actividades=new ArrayList<Actividad>();
-			actividades.add(actividad);
-			
-			detalleFactura=serviciofactura.crear(actividades,cobroTotal,numeroDias);
-			
-			
-		}
-		
+			if(actividad != null) {
+				
+				cobroTotal=obtenerCobro(actividad,actividad.getServicio().getPrecio());
+				numeroDias=obtenerDias(actividad.getFechaInicio());
+				
+				actividad.getSlot().setOcupado(false);
+				
+				List<Actividad> actividades=new ArrayList<Actividad>();
+				actividades.add(actividad);
+				
+				detalleFactura=serviciofactura.crear(actividades,cobroTotal,numeroDias);
+			}
 		return detalleFactura;
 	}
 	
 	public int obtenerCobro(Actividad actividad,int valorDia) {
 		        
-        double dias=obtenerDias(actividad);
+        double dias=obtenerDias(actividad.getFechaInicio());
         
         BigDecimal number = new BigDecimal(dias);
         
@@ -217,10 +224,9 @@ public class VehiculoServicio {
         }
 	}
 	
-	public double obtenerDias(Actividad actividad) {
+	public double obtenerDias(Date fechaInicial) {
 		Calendar calendar = Calendar.getInstance();
 		 
-        Date fechaInicial=actividad.getFechaInicio();
         Date fechaFinal=calendar.getTime();
 		
         int minutos=(int) ((fechaFinal.getTime()-fechaInicial.getTime())/1000);
@@ -237,16 +243,17 @@ public class VehiculoServicio {
 	public boolean verificarLetraInicial(String placa) {
 
 		boolean contiene = false;
-
-		if (placa.charAt(0) == RESTRICCION_LETRA)
+		
+		if ((""+placa.charAt(0)).toLowerCase().equals((""+RESTRICCION_LETRA).toLowerCase()) )
 			contiene = true;
-
+		
+		
 		return contiene;
 	}
 
 	public Stream<Vehiculo> obtenerVehiculosActivos(List<Actividad> actividades, Vehiculo vehiculo) {
 
-		Stream<Vehiculo> vehiculosActivos = actividades.stream()
+		return actividades.stream()
 				.filter(p -> p.getEstado() == 1
 						&& p.getVehiculo().getTipoVehiculo().getId() == vehiculo.getTipoVehiculo().getId())
 				.map(new Function<Actividad, Vehiculo>() {
@@ -257,11 +264,18 @@ public class VehiculoServicio {
 					}
 				});
 
-		return vehiculosActivos;
 	}
 
 	public Optional<Slot> obtenerPrimerSlotDisponible() {
 		return repositorioSlot.buscarTodos().stream().filter(s -> !s.isOcupado()).findFirst();
+	}
+	
+	public List<Slot> obtenerSlots(){
+		return repositorioSlot.buscarTodos();
+	}
+	
+	public Slot obtenerSlotPorId(int id) {
+		return repositorioSlot.findById(id);
 	}
 
 	public List<Actividad> obtenerParqueados() {
@@ -274,6 +288,13 @@ public class VehiculoServicio {
 		
 	}
 	
+	public Vehiculo guardarVehiculo(Vehiculo vehiculo) {
+		return this.repositorioVehiculo.create(vehiculo);
+	}
+	
+	public List<Vehiculo> obtenerListadoVehiculos(){
+		return repositorioVehiculo.findAll();
+	}
 	
 	
 }
